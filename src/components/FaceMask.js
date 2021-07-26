@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-//import { load } from "@tensorflow-models/facemesh";
+import "@tensorflow/tfjs-core";
+import "@tensorflow/tfjs-converter";
+import "@tensorflow/tfjs-backend-webgl";
 import { load, SupportedPackages } from "@tensorflow-models/face-landmarks-detection";
 import Webcam from "react-webcam";
 import Card from '@material-ui/core/Card';
