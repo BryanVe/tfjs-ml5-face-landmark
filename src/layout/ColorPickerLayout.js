@@ -46,24 +46,33 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const ColorPicker = (props) => {
-    return (
-        <Container>
-        <input type="color" value={props.value} {...props} />
-        <input type="text" value={props.value} {...props}/>
-        </Container>
-    );
-};
+// const ColorPicker = (props) => {
+//     return (
+//         <Container>
+//         <input type="color" value={props.value} {...props} />
+//         <input type="text" value={props.value} {...props}/>
+//         </Container>
+//     );
+// };
 
-const ColorPickerLayout = ({handleInput,color}) => {
-    
+const ColorPickerLayout = React.forwardRef((props, ref) => {
     const classes = useStyles();
-    // const [colorState,updateState] = useState(color);
-    console.log('color :>> ', color);
+    const [colorState, updateState] = useState('#FFFFFF');
+    
+    const handleInput = event => {
+        const selectedColor = event.target.value
+        updateState(selectedColor)
+    }
+
     return (
         <div className={classes.root}>
-        <ColorPicker onChange={handleInput} value={color} />
+        {/* <ColorPicker onChange={handleInput} value={colorState} /> */}
+        <Container>
+        <input ref={ref} type="color" onChange={handleInput} value={colorState} />
+        <input type="text" onChange={handleInput} value={colorState} />
+        </Container>
         </div>
     );
-}
+})
+
 export default ColorPickerLayout;

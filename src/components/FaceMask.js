@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-converter";
@@ -9,43 +9,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { draw } from "../utils";
-import styled from "styled-components";
-
-const Container = styled.span`
-    display: inline-flex;
-    align-items: center;
-    width: 150px;
-    max-width: 150px;
-    padding: 4px 12px;
-    border: 1px solid #bfc9d9;
-    border-radius: 4px;
-
-    input[type="color"] {
-        margin-right: 8px;
-        -webkit-appearance: none;
-        border: none;
-        width: auto;
-        height: auto;
-        cursor: pointer;
-        background: none;
-        &::-webkit-color-swatch-wrapper {
-        padding: 0;
-        width: 14px;
-        height: 14px;
-        }
-        &::-webkit-color-swatch {
-        border: 1px solid #bfc9d9;
-        border-radius: 4px;
-        padding: 0;
-        }
-    }
-
-    input[type="text"] {
-        border: none;
-        width: 100%;
-        font-size: 14px;
-    }
-`;
+import { ColorPickerLayout } from "layout";
 
 const useStyles = makeStyles(theme => ({
     header: {
@@ -71,10 +35,9 @@ const FaceMask = (props) => {
     const classes = useStyles();
     const webcam = useRef(null);
     const canvas = useRef(null);
-    const colorState = useRef("#FFFFFF");
-    const handleInput = e => {
-        colorState.current = e.target.value;
-    };
+    // const colorState = useRef("#FFFFFF");
+    const inputRef = React.createRef()
+
     useEffect(() => {
         
         const faceDetector = async () => {
@@ -102,12 +65,14 @@ const FaceMask = (props) => {
         if(canvas.current!==null) {
             const ctx = canvas.current.getContext("2d");
             requestAnimationFrame(() => {
-                draw(predictions, ctx, videoWidth, videoHeight,colorState.current);
+                const color = inputRef.current.value ? inputRef.current.value : '#FFF'
+
+                draw(predictions, ctx, videoWidth, videoHeight, color);
             });
         }
         detect(model);
     };
-    },[]);
+    },[inputRef]);
     
     return (
         <div className="{classes.root}">
@@ -124,10 +89,13 @@ const FaceMask = (props) => {
                     <CardContent>
                     <div className="{classes.picker}">
                     <div className={classes.root}>
-                        <Container>
+                        {/* <Container>
                             <input type="color" onChange={handleInput} value={colorState.current}/>
                             <input type="text" onChange={handleInput} value={colorState.current} />
-                        </Container>
+                        </Container> */}
+                        <ColorPickerLayout
+                            ref={inputRef}
+                        />
                         </div>
                     </div>
                     </CardContent>
