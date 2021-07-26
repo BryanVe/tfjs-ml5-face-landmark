@@ -39,7 +39,6 @@ const FaceMask = (props) => {
     const inputRef = React.createRef()
 
     useEffect(() => {
-        
         const faceDetector = async () => {
             const model = await load(
                 SupportedPackages.mediapipeFacemesh
@@ -49,28 +48,34 @@ const FaceMask = (props) => {
         faceDetector();
         
         const detect = async (model) => {
-            if (!webcam.current || !canvas.current) return;
-            const webcamCurrent = webcam.current;
-            if (webcamCurrent.video.readyState !== 4)
-            detect(model);
+            if (!webcam.current || !canvas.current)
+                return;
             
-        const video = webcamCurrent.video;
-        const videoWidth = webcamCurrent.video.videoWidth;
-        const videoHeight = webcamCurrent.video.videoHeight;
-        canvas.current.width = videoWidth;
-        canvas.current.height = videoHeight;
-        const predictions = await model.estimateFaces({
-            input: video
-        });
-        if(canvas.current!==null) {
-            const ctx = canvas.current.getContext("2d");
-            requestAnimationFrame(() => {
-                const color = inputRef.current.value ? inputRef.current.value : '#FFF'
+                const webcamCurrent = webcam.current;
+            
+            // if (webcamCurrent.video.readyState !== 4)
+            //     detect(model);
+            
+            const video = webcamCurrent.video;
 
-                draw(predictions, ctx, videoWidth, videoHeight, color);
-            });
-        }
-        detect(model);
+            if (video.readyState === 4) {
+                const videoWidth = webcamCurrent.video.videoWidth;
+                const videoHeight = webcamCurrent.video.videoHeight;
+                canvas.current.width = videoWidth;
+                canvas.current.height = videoHeight;
+                const predictions = await model.estimateFaces({
+                    input: video
+                });
+                if(canvas.current!==null) {
+                    const ctx = canvas.current.getContext("2d");
+                    requestAnimationFrame(() => {
+                        const color = inputRef.current.value ? inputRef.current.value : '#FFF'
+    
+                        draw(predictions, ctx, videoWidth, videoHeight, color);
+                    });
+                }
+                detect(model);
+            }
     };
     },[inputRef]);
     
